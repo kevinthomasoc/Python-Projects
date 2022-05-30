@@ -1,25 +1,48 @@
-import random
-max = input("What is the highest number you want to guess up to? ")
-#Check if max is a number
-if max.isdigit():
-    max = int(max)
-else:
-    print("You did not enter a number greater than 0, please restart the program.")
+def view():
+    with open("passwords.txt", "r") as file:
+        for line in file.readlines():
+            print(line.rstrip())
 
-randInt = random.randint(0,max)
+def add():
+    service = input("Enter what service the account is made for (E.g. Spotify): ")
+    username = input("Enter the account username: ")
+    password = input("Enter the account password: ")
 
-guess = input("Guess a number: ")
-
-while guess != randInt:
-    if int(guess) == randInt:
-        break
-    if int(guess) > randInt:
-        print("The number is lower!")
-    if int(guess) < randInt:
-        print("The number is higher!")
-    guess = input("Guess a number: ")
+    with open("passwords.txt", "a") as file:
+        file.write("Service: " + service + " Username: " + username + " Password: " + password + "\n")
 
 
-print("You guess it! The number is " + str(randInt) + "!")
-quit()
+def delete(servicename):
+    with open("passwords.txt", "r") as file:
+        lines = file.readlines()
+    with open("passwords.txt", "w") as file:
+        found = False
+        for line in lines:
+            if (servicename in (line.strip()).lower()) == False:
+                file.write(line)
+            else:
+                found = True
+        if found == True:
+            return("Your account information for " + servicename + " has been deleted.")
+        else:
+            return("Your account information for " + servicename + " could not be found.")
 
+
+masterPwd = input("What is the master password?")
+
+
+
+
+while True:
+    mode = input("Would you like to add a password, or view existing passwords (view, add, delete)?")
+    if mode.lower() == "view":
+        view()
+    elif mode.lower() == "add":
+        add()
+    elif mode.lower() == "delete":
+        servicename = input("Enter the name of the service of the account you want deleted: ")
+        servicename = servicename.lower()
+        print(delete(servicename))
+    else:
+        print("Invalid Input.")
+        continue
